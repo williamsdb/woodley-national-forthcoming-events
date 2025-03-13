@@ -71,11 +71,13 @@ The output looks as follows:
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Running the script is very straightforward:
+To install the plugin on your site do the following:
 
-1. download the code/clone the repository
-
-You can read more about how this all works in [this blog post](https://www.spokenlikeageek.com/2024/12/16/what-should-i-play-next/).
+1. download the src folder from the [project's Github page](https://github.com/williamsdb/woodley-national-forthcoming-events/tree/main/src)
+2. compress the src folder into a zip file
+3. go to "Add New Plugin" on your Wordpress installation 
+4. click "Upload Plugin" and upload the zip file created in 2
+5. activate the plugin.
 
 ### Prerequisites
 
@@ -86,10 +88,7 @@ Requirements are very simple, it requires the following:
 
 ### Installation
 
-1. Clone the repo:
-   ```sh
-   git clone https://github.com/williamsdb/woodley-national-forthcoming-events.git
-   ```
+See Getting Started above.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -98,7 +97,7 @@ Requirements are very simple, it requires the following:
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Edit the page that you want to display the information on, add a shortcode block and enter the following:
+Edit the page that you want to display the information on, a shortcode block and enter the following:
 
 ```[wad]```
 
