@@ -114,9 +114,8 @@ function woodley_national_forthcoming_events( $atts = [], $content = null, $tag 
     foreach ($events as $event) {
         // only show future events or with no date/time
         if ($event['timestamp'] > time() || $event['date'] == '') {
-            $output .= '<tr><td>'.$i.'</td><td width="20%" valign="top"><strong>'.$event['date'].'<strong></td><td><a href="'.$event['url'].'" target="_blank"><span class="u3aeventtitle">'.$event['title'].'</span></a><br>'.$event['description'].'</td></tr>';
+            $output .= '<tr><td>'.$event['timestamp'].'</td><td width="20%" valign="top"><strong>'.$event['date'].'<strong></td><td><a href="'.$event['url'].'" target="_blank"><span class="u3aeventtitle">'.$event['title'].'</span></a><br>'.$event['description'].'</td></tr>';
         }
-        $i++;
     }
 
     $output .= '</tbody></table></div>';

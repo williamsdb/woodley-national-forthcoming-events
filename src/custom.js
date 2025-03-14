@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
   $('#datatableResdb').DataTable({
           "columns": [
             { targets: 0, visible: false, searchable: false, className: 'never' },
-            null,
+            { targets: 1, orderData: 0 },
             null
           ],
           "order": [[0, 'asc']],
