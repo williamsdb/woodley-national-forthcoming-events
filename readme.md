@@ -99,7 +99,7 @@ See Getting Started above.
 
 Edit the page that you want to display the information on, a shortcode block and enter the following:
 
-```[wad]```
+```[waduwn]```
 
 Here it is on our Events page:
 

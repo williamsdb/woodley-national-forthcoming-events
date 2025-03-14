@@ -25,7 +25,11 @@ function waduwn_queue_stylesheet() {
 function woodley_national_forthcoming_events( $atts = [], $content = null, $tag = '' ) {
 
     // get the whole of the forthcoming events page html
-    $html = get_web_page('https://www.u3a.org.uk/events/educational-events#Events');
+    list($httpCode, $html) = get_web_page('https://www.u3a.org.uk/events/educational-events#Events');
+    if ($httpCode != 200 || empty($html)) {
+        $output = '<p>Sorry, there was a problem retrieving the events from the national u3a website. Please try again later. Error code ('.$httpCode . ') ' . $html.'</p>';
+        return $output;
+    }
 
     $dom = new DOMDocument();
     libxml_use_internal_errors(true);
@@ -136,7 +140,8 @@ function get_web_page($url) {
     $ch = curl_init($url);
     curl_setopt_array($ch, $options);
     $content = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
-    return $content;
+    return array($httpCode, $content);
 }
