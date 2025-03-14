@@ -12,11 +12,14 @@ add_shortcode( 'waduwn', 'woodley_national_forthcoming_events' );
 add_action( 'wp_enqueue_scripts', 'waduwn_queue_stylesheet');
 
 function waduwn_queue_stylesheet() {
-  wp_enqueue_style('waduwn_stylesheet_dt00', '//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css', array());
-  wp_enqueue_style('waduwn_stylesheet_dt01', '//cdn.datatables.net/responsive/3.0.4/css/responsive.dataTables.min.css', array());
-  wp_enqueue_script( 'waduwn_custom_js00', '//cdn.datatables.net/2.2.2/js/dataTables.min.js', array('jquery'), '1.1');
-  wp_enqueue_script( 'waduwn_custom_js01',  '//cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js', array(), '1.1');
-  wp_enqueue_script( 'waduwn_custom_js', plugins_url( '/custom.js', __FILE__ ), array(), '1.14' );
+    global $post;
+    if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'waduwn') ) {
+        wp_enqueue_style('waduwn_stylesheet_dt00', '//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css', array());
+        wp_enqueue_style('waduwn_stylesheet_dt01', '//cdn.datatables.net/responsive/3.0.4/css/responsive.dataTables.min.css', array());
+        wp_enqueue_script( 'waduwn_custom_js00', '//cdn.datatables.net/2.2.2/js/dataTables.min.js', array('jquery'), '1.1');
+        wp_enqueue_script( 'waduwn_custom_js01',  '//cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js', array(), '1.1');
+        wp_enqueue_script( 'waduwn_custom_js', plugins_url( '/custom.js', __FILE__ ), array(), '1.14' );
+    }
 }
 
 function woodley_national_forthcoming_events( $atts = [], $content = null, $tag = '' ) {
