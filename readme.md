@@ -52,6 +52,12 @@ The output looks as follows:
 
 ![](https://www.spokenlikeageek.com/wp-content/uploads/2025/03/Screenshot-2025-03-13-at-15.07.23.png)
 
+Some points to note:
+
+* events will drop off the list once passed even if they remain on the main u3a list
+* the formatting of the description is taken directly from the national u3a page so if it looks wonky the plugin is just reflecting that
+* **if the u3a changes they way this page works the plug will stop working!** Although I will endeavour to change the plugin to match.
+
 <a href='https://ko-fi.com/Y8Y0POEES' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi5.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -97,9 +103,14 @@ See Getting Started above.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Edit the page that you want to display the information on, a shortcode block and enter the following:
+Edit the page that you want to display the information on, add a shortcode block and enter the following:
 
 ```[waduwn]```
+
+You can also suppress the title and/or the description by adding parameters to the shortcode. The following will display the description but not the title, for example:
+
+
+```[waduwn title="0" desc="1"]```
 
 Here it is on our Events page:
 

@@ -24,6 +24,15 @@ function waduwn_queue_stylesheet() {
 
 function woodley_national_forthcoming_events( $atts = [], $content = null, $tag = '' ) {
 
+    // Default parameters
+    $defaults = array(
+        'title' => TRUE,
+        'desc' => TRUE,
+    );
+
+    // Merge shortcode attributes with defaults
+    $args = shortcode_atts($defaults, $atts, 'waduwn');
+
     // get the whole of the forthcoming events page html
     list($httpCode, $html) = get_web_page('https://www.u3a.org.uk/events/educational-events#Events');
     if ($httpCode != 200 || empty($html)) {
@@ -106,8 +115,14 @@ function woodley_national_forthcoming_events( $atts = [], $content = null, $tag 
     }
 
     // format the heading for the section
-    $output = '<div class="u3aeventlist wp-block-u3a-eventlist"><h3>Forthcoming national events</h3>';
-    $output .= '<p>These events are organised by the national u3a and are open to all members. Click on the event title for more information and to book.</p>';
+    $output = '';
+    if ($args['title']) {
+        $output .= '<h3>Forthcoming national events</h3>';
+    }
+    if ($args['desc']) {
+        $output .= '<p>These events are organised by the national u3a and are open to all members. Click on the event title for more information and to book.</p>';
+    }
+
     $output .= '<table id="datatableResdb" class="table table-striped table-bordered"><thead><tr><th>no</th><th>Date</th><th>Description</th></tr></thead><tbody>';
 
     $i=0;
