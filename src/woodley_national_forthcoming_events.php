@@ -117,23 +117,23 @@ function woodley_national_forthcoming_events( $atts = [], $content = null, $tag 
     // format the heading for the section
     $output = '';
     if ($args['title']) {
-        $output .= '<h3>Forthcoming national events</h3>';
+        $output .= '<h3>Forthcoming national events</h3>'.PHP_EOL;
     }
     if ($args['desc']) {
-        $output .= '<p>These events are organised by the national u3a and are open to all members. Click on the event title for more information and to book.</p>';
+        $output .= '<p>These events are organised by the national u3a and are open to all members. Click on the event title for more information and to book.</p>'.PHP_EOL;
     }
 
-    $output .= '<table id="datatableResdb" class="table table-striped table-bordered"><thead><tr><th>no</th><th>Date</th><th>Description</th></tr></thead><tbody>';
+    $output .= '<table id="datatableResdb" class="table table-striped table-bordered"><thead><tr><th>no</th><th>Date</th><th>Description</th></tr></thead><tbody>'.PHP_EOL;
 
     $i=0;
     foreach ($events as $event) {
         // only show future events or with no date/time
         if ($event['timestamp'] > time() || $event['date'] == '') {
-            $output .= '<tr><td>'.$event['timestamp'].'</td><td width="20%" valign="top"><strong>'.$event['date'].'<strong></td><td><a href="'.$event['url'].'" target="_blank"><span class="u3aeventtitle">'.$event['title'].'</span></a><br>'.$event['description'].'</td></tr>';
+            $output .= '<tr><td>'.$event['timestamp'].'</td><td width="20%" valign="top"><strong>'.$event['date'].'<strong></td><td><a href="'.$event['url'].'" target="_blank"><span class="u3aeventtitle">'.$event['title'].'</span></a><br>'.$event['description'].'</td></tr>'.PHP_EOL;
         }
     }
 
-    $output .= '</tbody></table></div>';
+    $output .= '</tbody></table>'.PHP_EOL;
 
 	return $output;
 }
