@@ -14,4 +14,13 @@ jQuery(document).ready(function($) {
           "searching": true,
           "info":     true
         });
+
+  var table = $('#datatableResdb').DataTable();
+
+  table.on('page.dt', function() {
+          $('html, body').animate({
+              scrollTop: $('#datatableResdb').offset().top
+          }, 300); // Adjust speed as needed
+  });
+
 });
