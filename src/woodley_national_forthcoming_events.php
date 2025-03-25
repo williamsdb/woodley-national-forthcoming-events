@@ -1,28 +1,40 @@
 <?php
 /*
 Plugin Name: Woodley & District u3a - wider network forthcoming events
-Plugin URI: https://www.woodleyu3a.org.uk/
+Plugin URI: https://github.com/williamsdb/woodley-national-forthcoming-events
 Description: Scrape events from the national u3a page and display them as a formatted list.
-Version: 1.1
+Version: 2.0.1
 Author: Neil Thompson
 Author URI: http://nei.lt
 */
 
-add_shortcode( 'waduwn', 'woodley_national_forthcoming_events' );
-add_action( 'wp_enqueue_scripts', 'waduwn_queue_stylesheet');
+require __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
 
-function waduwn_queue_stylesheet() {
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$MyUpdateChecker = PucFactory::buildUpdateChecker(
+    'https://plugins.nei.lt/woodley_national_forthcoming_events.json',
+    __FILE__,
+    'woodley_national_forthcoming_events'
+);
+
+add_shortcode('waduwn', 'woodley_national_forthcoming_events');
+add_action('wp_enqueue_scripts', 'waduwn_queue_stylesheet');
+
+function waduwn_queue_stylesheet()
+{
     global $post;
-    if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'waduwn') ) {
+    if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'waduwn')) {
         wp_enqueue_style('waduwn_stylesheet_dt00', '//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css', array());
         wp_enqueue_style('waduwn_stylesheet_dt01', '//cdn.datatables.net/responsive/3.0.4/css/responsive.dataTables.min.css', array());
-        wp_enqueue_script( 'waduwn_custom_js00', '//cdn.datatables.net/2.2.2/js/dataTables.min.js', array('jquery'), '1.1');
-        wp_enqueue_script( 'waduwn_custom_js01',  '//cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js', array(), '1.1');
-        wp_enqueue_script( 'waduwn_custom_js', plugins_url( '/custom.js', __FILE__ ), array(), '1.14' );
+        wp_enqueue_script('waduwn_custom_js00', '//cdn.datatables.net/2.2.2/js/dataTables.min.js', array('jquery'), '1.1');
+        wp_enqueue_script('waduwn_custom_js01',  '//cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js', array(), '1.1');
+        wp_enqueue_script('waduwn_custom_js', plugins_url('/custom.js', __FILE__), array(), '1.14');
     }
 }
 
-function woodley_national_forthcoming_events( $atts = [], $content = null, $tag = '' ) {
+function woodley_national_forthcoming_events($atts = [], $content = null, $tag = '')
+{
 
     // Default parameters
     $defaults = array(
@@ -36,7 +48,7 @@ function woodley_national_forthcoming_events( $atts = [], $content = null, $tag 
     // get the whole of the forthcoming events page html
     list($httpCode, $html) = get_web_page('https://www.u3a.org.uk/events/educational-events#Events');
     if ($httpCode != 200 || empty($html)) {
-        $output = '<p>Sorry, there was a problem retrieving the events from the national u3a website. Please try again later. Error code ('.$httpCode . ') ' . $html.'</p>';
+        $output = '<p>Sorry, there was a problem retrieving the events from the national u3a website. Please try again later. Error code (' . $httpCode . ') ' . $html . '</p>';
         return $output;
     }
 
@@ -117,28 +129,29 @@ function woodley_national_forthcoming_events( $atts = [], $content = null, $tag 
     // format the heading for the section
     $output = '';
     if ($args['title']) {
-        $output .= '<h3>Forthcoming national events</h3>'.PHP_EOL;
+        $output .= '<h3>Forthcoming national events</h3>' . PHP_EOL;
     }
     if ($args['desc']) {
-        $output .= '<p>These events are organised by the national u3a and are open to all members. Click on the event title for more information and to book.</p>'.PHP_EOL;
+        $output .= '<p>These events are organised by the national u3a and are open to all members. Click on the event title for more information and to book.</p>' . PHP_EOL;
     }
 
-    $output .= '<table id="datatableResdb" class="table table-striped table-bordered"><thead><tr><th>no</th><th>Date</th><th>Description</th></tr></thead><tbody>'.PHP_EOL;
+    $output .= '<table id="datatableResdb" class="table table-striped table-bordered"><thead><tr><th>no</th><th>Date</th><th>Description</th></tr></thead><tbody>' . PHP_EOL;
 
-    $i=0;
+    $i = 0;
     foreach ($events as $event) {
         // only show future events or with no date/time
         if ($event['timestamp'] > time() || $event['date'] == '') {
-            $output .= '<tr><td>'.$event['timestamp'].'</td><td width="20%" valign="top"><strong>'.$event['date'].'<strong></td><td><a href="'.$event['url'].'" target="_blank"><span class="u3aeventtitle">'.$event['title'].'</span></a><br>'.$event['description'].'</td></tr>'.PHP_EOL;
+            $output .= '<tr><td>' . $event['timestamp'] . '</td><td width="20%" valign="top"><strong>' . $event['date'] . '<strong></td><td><a href="' . $event['url'] . '" target="_blank"><span class="u3aeventtitle">' . $event['title'] . '</span></a><br>' . $event['description'] . '</td></tr>' . PHP_EOL;
         }
     }
 
-    $output .= '</tbody></table>'.PHP_EOL;
+    $output .= '</tbody></table>' . PHP_EOL;
 
-	return $output;
+    return $output;
 }
 
-function get_web_page($url) {
+function get_web_page($url)
+{
     $options = [
         CURLOPT_RETURNTRANSFER => true,   // return web page
         CURLOPT_HEADER         => false,  // don't return headers
