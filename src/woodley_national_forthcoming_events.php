@@ -3,7 +3,7 @@
 Plugin Name: Woodley & District u3a - wider network forthcoming events
 Plugin URI: https://github.com/williamsdb/woodley-national-forthcoming-events
 Description: Scrape events from the national u3a page and display them as a formatted list.
-Version: 2.0.1
+Version: 2.0.2
 Author: Neil Thompson
 Author URI: http://nei.lt
 */
@@ -115,6 +115,9 @@ function woodley_national_forthcoming_events($atts = [], $content = null, $tag =
             // Convert the DateTime object to a more usable format and a timestamp
             $timestamp = $dateTime->format("U");
             $usableDate = $dateTime->format("jS F Y ga");
+        } else {
+            $usableDate = '';
+            $timestamp = 0;
         }
 
         $events[] = [

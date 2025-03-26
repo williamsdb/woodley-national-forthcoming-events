@@ -77,13 +77,23 @@ Some points to note:
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To install the plugin on your site do the following:
+The following will take you through the process of installing version 2 of the woodley_national_forthcoming_events plugin. 
 
-1. download the src folder from the [project's Github page](https://github.com/williamsdb/woodley-national-forthcoming-events/tree/main/src)
-2. compress the src folder into a zip file
-3. go to "Add New Plugin" on your Wordpress installation 
-4. click "Upload Plugin" and upload the zip file created in 2
-5. activate the plugin.
+1. Download the latest version of the plugin from [here](https://plugins.nei.lt/woodley_national_forthcoming_events/woodley_national_forthcoming_events.zip)
+2. If you have version 1 install Deactivate and Delete it from the Dashboard
+3. Click the Add New Plugin button at the top of the page
+4. Click the Upload Plugin button
+5. Find the zip file you downloaded in step 1
+6. Click Install Now
+7. Click Activate Now
+
+You should see the plug looks like this:
+
+![](https://plugins.nei.lt/30970.png)
+
+Automatic updates are supported and when available will look like this:
+
+![](https://plugins.nei.lt/93266.png)
 
 ### Prerequisites
 
