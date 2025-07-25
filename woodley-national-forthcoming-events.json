@@ -2,19 +2,19 @@
   "name": "Woodley & District u3a - wider network forthcoming events",
   "slug": "woodley_national_forthcoming_events",
   "download_url": "https://plugins.nei.lt/woodley_national_forthcoming_events/woodley_national_forthcoming_events.zip",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "author": "Neil Thompson",
   "author_homepage": "https://nei.lt/",
 
   "homepage": "https://github.com/williamsdb/woodley-national-forthcoming-events",
   "requires": "6.7",
   "tested": "6.7.2",
-  "last_updated": "2025-03-25 16:54:00",
-  "upgrade_notice": "This version brings updates from the dashboard rather than having to reinstall.",
+  "last_updated": "2025-07-25 15:05:00",
+  "upgrade_notice": "Included an Add to Calendar feature. Use the calendar=1 option to enable.",
 
   "sections": {
     "description": "<p>I was asked by someone in our local u3a about the possibilty of displaying the national u3a events on our website. They were keen to promote what the u3a offered nationally and bringing that to a wider audience. I had a look and couldn't find any feed of this information so I decided to write a plugin that extracted the required data from the page and display it in tabular form. This looks like the following and you can see a live version here: <a href=\"https://woodleyu3a.org.uk/events/\">https://woodleyu3a.org.uk/events/</a>.</p> <p>Some points to note:</p> <ul><li>events will drop off the list once passed even if they remain on the main u3a list</li> <li>the formatting of the description is taken directly from the national u3a page so if it looks wonky the plugin is just reflecting that</li> <li>if the u3a changes they way this page works the plug will stop working! Although I will endeavour to change the plugin to match.</li></ul>",
     "installation": "<ul><li>Download the latest zip file from here: <a href=\"https://plugins.nei.lt/woodley_national_forthcoming_events/woodley_national_forthcoming_events.zip\">here</a></li><li>Head over to your WordPress dashboard and slect Plugins>Add New Plugin</li><li>Click the <i>Upload Plugin</i> and select the zip file you downloaded</li><li>Activate the plugin as normal.</li></ul> <p>Go to the <a href=\"https://github.com/williamsdb/woodley-national-forthcoming-events\">project home page</a> for how to put the shortcode on your page.</p>",
-    "changelog": "<ul><li>2.0.2 - Fix warning when there's not date.</li><li>2.0 - Updated to allow updating from WordPress admin panel.</li><li>1.0 - Initial version</li></ul>"
+    "changelog": "<ul><li>2.1.0 - New option to add events to your personal calendar.</li><li>2.0.2 - Fix warning when there's not date.</li><li>2.0 - Updated to allow updating from WordPress admin panel.</li><li>1.0 - Initial version</li></ul>"
   }
 }

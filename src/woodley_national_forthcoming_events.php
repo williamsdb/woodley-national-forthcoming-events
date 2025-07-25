@@ -3,7 +3,7 @@
 Plugin Name: Woodley & District u3a - wider network forthcoming events
 Plugin URI: https://github.com/williamsdb/woodley-national-forthcoming-events
 Description: Scrape events from the national u3a page and display them as a formatted list.
-Version: 2.0.2
+Version: 2.1.0
 Author: Neil Thompson
 Author URI: http://nei.lt
 */
@@ -29,7 +29,7 @@ function waduwn_queue_stylesheet()
         wp_enqueue_style('waduwn_stylesheet_dt01', '//cdn.datatables.net/responsive/3.0.4/css/responsive.dataTables.min.css', array());
         wp_enqueue_script('waduwn_custom_js00', '//cdn.datatables.net/2.2.2/js/dataTables.min.js', array('jquery'), '1.1');
         wp_enqueue_script('waduwn_custom_js01',  '//cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js', array(), '1.1');
-        wp_enqueue_script('waduwn_custom_js', plugins_url('/custom.js', __FILE__), array(), '1.14');
+        wp_enqueue_script('waduwn_custom_js', plugins_url('/custom.js', __FILE__), array(), '1.1.20');
     }
 }
 
@@ -40,6 +40,7 @@ function woodley_national_forthcoming_events($atts = [], $content = null, $tag =
     $defaults = array(
         'title' => TRUE,
         'desc' => TRUE,
+        'calendar' => FALSE,
     );
 
     // Merge shortcode attributes with defaults
@@ -144,7 +145,30 @@ function woodley_national_forthcoming_events($atts = [], $content = null, $tag =
     foreach ($events as $event) {
         // only show future events or with no date/time
         if ($event['timestamp'] > time() || $event['date'] == '') {
-            $output .= '<tr><td>' . $event['timestamp'] . '</td><td width="20%" valign="top"><strong>' . $event['date'] . '<strong></td><td><a href="' . $event['url'] . '" target="_blank"><span class="u3aeventtitle">' . $event['title'] . '</span></a><br>' . $event['description'] . '</td></tr>' . PHP_EOL;
+            $output .= '<tr>';
+
+            // Show the date and time and add to calendar if selected
+            $output .= '<td>' . $event['timestamp'] . '</td>';
+            $output .= '<td width="20%" valign="top"><strong>' . $event['date'] . '</strong>';
+
+            // Add the calendar button if the timestamp is valid and the calendar option is enabled
+            if ($event['timestamp'] > 0 && $args['calendar']) {
+                // Add to Calendar button and popout menu
+                $cleandesc = strip_tags($event['description']);
+                $cleandesc = str_replace(array("\r", "\n"), ' ', $cleandesc);
+                $output .= '<div class="add-to-calendar-container" style="display:inline-block; position:relative; margin-top:5px;">
+                    <a href="#" class="add-to-calendar-link" onclick="event.preventDefault(); this.nextElementSibling.style.display = (this.nextElementSibling.style.display === \'block\' ? \'none\' : \'block\');"><small>Add to Calendar &#x25BC;</small></a>
+                    <div class="add-to-calendar-menu" style="display:none; position:absolute; z-index:999; background:#fff; border:1px solid #ccc; padding:8px 0; min-width:140px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                        <a href="#" download="event.ics" target="_blank" style="display:block; padding:4px 16px; text-decoration:none; color:#222;" onclick="event.preventDefault(); addToCalendar(\'' . $event['title'] . '\',\'' . $cleandesc . '\',\'' . $event['date'] . '\');">Apple</a>
+                        <a href="' . htmlspecialchars(generate_google_calendar_url($event)) . '" target="_blank" style="display:block; padding:4px 16px; text-decoration:none; color:#222;">Google</a>
+                        <a href="#" download="event.ics" target="_blank" style="display:block; padding:4px 16px; text-decoration:none; color:#222;" onclick="event.preventDefault(); addToCalendar(\'' . $event['title'] . '\',\'' . $cleandesc . '\',\'' . $event['date'] . '\');">Outlook</a>
+                        <a href="' . htmlspecialchars(generate_yahoo_calendar_url($event)) . '" target="_blank" style="display:block; padding:4px 16px; text-decoration:none; color:#222;">Yahoo</a>
+                    </div>
+                </div>';
+            }
+            $output .= '</td><td><a href="' . $event['url'] . '" target="_blank"><span class="u3aeventtitle">' . $event['title'] . '</span></a><br>' . $event['description'];
+
+            $output .= '</td></tr>' . PHP_EOL;
         }
     }
 
@@ -174,4 +198,57 @@ function get_web_page($url)
     curl_close($ch);
 
     return array($httpCode, $content);
+}
+
+function generate_google_calendar_url($event)
+{
+    $title = urlencode($event['title']);
+    $url = urlencode($event['url']);
+    $sdate = format_date($event['date']);
+    $edate = '';
+    if ($sdate) {
+        $start = DateTime::createFromFormat('Ymd\THis', $sdate, new DateTimeZone('Europe/London'));
+        if ($start) {
+            $end = clone $start;
+            $end->modify('+1 hour');
+            $edate = $end->format('Ymd\THis');
+        }
+    }
+    $description = urlencode(strip_tags($event['description']));
+    return "https://www.google.com/calendar/render?action=TEMPLATE&text={$title}&dates={$sdate}/{$edate}&details={$description}&location={$url}";
+}
+
+function generate_yahoo_calendar_url($event)
+{
+    $title = urlencode($event['title']);
+    $date = urlencode($event['date']);
+    $url = urlencode($event['url']);
+    $sdate = format_date($event['date']);
+    $edate = '';
+    if ($sdate) {
+        $start = DateTime::createFromFormat('Ymd\THis', $sdate, new DateTimeZone('Europe/London'));
+        if ($start) {
+            $end = clone $start;
+            $end->modify('+1 hour');
+            $edate = $end->format('Ymd\THis');
+        }
+    }
+    $description = urlencode(strip_tags($event['description']));
+    return "https://calendar.yahoo.com/?v=60&view=d&type=20&title={$title}&st={$sdate}&et={$edate}&url={$url}&desc={$description}";
+}
+
+function format_date($date)
+{
+    // Convert date like "1st July 2025 10am" to "20250701T100000Z"
+    $dateTime = DateTime::createFromFormat('jS F Y ga', $date, new DateTimeZone('Europe/London'));
+    if (!$dateTime) {
+        // Try fallback without "st/nd/rd/th"
+        $date = preg_replace('/(\d+)(st|nd|rd|th)/', '$1', $date);
+        $dateTime = DateTime::createFromFormat('j F Y ga', $date, new DateTimeZone('Europe/London'));
+    }
+    if ($dateTime) {
+        $dateTime->setTimezone(new DateTimeZone('Europe/London'));
+        return $dateTime->format('Ymd\THis');
+    }
+    return '';
 }
