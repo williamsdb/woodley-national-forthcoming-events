@@ -50,7 +50,7 @@ I was asked about the possibilty of displaying the [national u3a events](https:/
 
 The output looks as follows:
 
-![](https://www.spokenlikeageek.com/wp-content/uploads/2025/03/Screenshot-2025-03-13-at-15.07.23.png)
+![](https://www.spokenlikeageek.com/wp-content/uploads/2025/07/FireShot-Capture-140-Events-woodleyu3a.neilthompson.co_.uk_.png)
 
 Some points to note:
 
@@ -117,10 +117,16 @@ Edit the page that you want to display the information on, add a shortcode block
 
 ```[waduwn]```
 
-You can also suppress the title and/or the description by adding parameters to the shortcode. The following will display the description but not the title, for example:
+The shortcode takes three parameters as follows:
 
+```[waduwn title="0" desc="1" calendar="1"]```
 
-```[waduwn title="0" desc="1"]```
+Which control the following:
+
+* title - the "Forthcoming National Events" title. Default is on.
+* desc - the paragraph of text below the title. Default is on.
+* calendar - whether the Add to Calendar option should be shown. Default is off.
+
 
 Here it is on our Events page:
 
