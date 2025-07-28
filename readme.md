@@ -77,15 +77,16 @@ Some points to note:
 <!-- GETTING STARTED -->
 ## Getting Started
 
-The following will take you through the process of installing version 2 of the woodley_national_forthcoming_events plugin. 
+The following will take you through the process of installing version 2 of the woodley\_national\_forthcoming\_events plugin. 
 
 1. Download the latest version of the plugin from [here](https://plugins.nei.lt/woodley_national_forthcoming_events/woodley_national_forthcoming_events.zip)
-2. If you have version 1 install Deactivate and Delete it from the Dashboard
-3. Click the Add New Plugin button at the top of the page
-4. Click the Upload Plugin button
-5. Find the zip file you downloaded in step 1
-6. Click Install Now
-7. Click Activate Now
+2. Click the Add New Plugin button at the top of the page
+3. Click the Upload Plugin button
+4. Find the zip file you downloaded in step 1
+5. Click Install Now
+6. Click Activate Now
+
+**NOTE: If you have version 1 installed, deactivate and delete it from the Dashboard.**
 
 You should see the plug looks like this:
 
