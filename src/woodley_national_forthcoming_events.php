@@ -3,7 +3,7 @@
 Plugin Name: Woodley & District u3a - wider network forthcoming events
 Plugin URI: https://github.com/williamsdb/woodley-national-forthcoming-events
 Description: Scrape events from the national u3a page and display them as a formatted list.
-Version: 2.1.0
+Version: 2.1.1
 Author: Neil Thompson
 Author URI: http://nei.lt
 */
@@ -121,13 +121,15 @@ function woodley_national_forthcoming_events($atts = [], $content = null, $tag =
             $timestamp = 0;
         }
 
-        $events[] = [
-            'title' => $title,
-            'url' => $url,
-            'description' => $description,
-            'date' => $usableDate,
-            'timestamp' => $timestamp
-        ];
+        if (!empty($usableDate)) {
+            $events[] = [
+                'title' => $title,
+                'url' => $url,
+                'description' => $description,
+                'date' => $usableDate,
+                'timestamp' => $timestamp
+            ];
+        }
     }
 
     // format the heading for the section
@@ -149,7 +151,7 @@ function woodley_national_forthcoming_events($atts = [], $content = null, $tag =
 
             // Show the date and time and add to calendar if selected
             $output .= '<td>' . $event['timestamp'] . '</td>';
-            $output .= '<td width="20%" valign="top"><strong>' . $event['date'] . '</strong>';
+            $output .= '<td width="20%" valign="top"><strong>' . $event['date'] . '</strong>&nbsp;';
 
             // Add the calendar button if the timestamp is valid and the calendar option is enabled
             if ($event['timestamp'] > 0 && $args['calendar']) {
