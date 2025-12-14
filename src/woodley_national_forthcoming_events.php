@@ -3,7 +3,7 @@
 Plugin Name: Woodley & District u3a - wider network forthcoming events
 Plugin URI: https://github.com/williamsdb/woodley-national-forthcoming-events
 Description: Scrape events from the national u3a page and display them as a formatted list.
-Version: 2.1.1
+Version: 2.2.0
 Author: Neil Thompson
 Author URI: http://nei.lt
 */
@@ -105,11 +105,8 @@ function woodley_national_forthcoming_events($atts = [], $content = null, $tag =
             $description = preg_replace('/\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+\d{1,2}\s+\w+\s+at\s+\d{1,2}(\.\d{1,2})?(am|pm)\b/i', '', $description);
         }
 
-        // Define the format of the input date string
-        $inputFormat = "l j F \a\\t ga";
-
         // Create a DateTime object from the input string
-        $dateTime = DateTime::createFromFormat($inputFormat, $date);
+        $dateTime = parseEventDate($date);
 
         // Check if the date was successfully parsed
         if ($dateTime) {
@@ -121,7 +118,7 @@ function woodley_national_forthcoming_events($atts = [], $content = null, $tag =
             $timestamp = 0;
         }
 
-        if (!empty($usableDate)) {
+        if (!empty($usableDate) && $timestamp > time() && $timestamp < strtotime('+10 months')) {
             $events[] = [
                 'title' => $title,
                 'url' => $url,
@@ -253,4 +250,69 @@ function format_date($date)
         return $dateTime->format('Ymd\THis');
     }
     return '';
+}
+
+/**
+ * Parse strings like "Monday 12 January at 10am" or "Wednesday 10 December at 2pm"
+ * and return a DateTime with the correct year (rolls into next year when appropriate).
+ *
+ * @param string $text  Input string
+ * @param DateTimeZone|null $tz Optional timezone (default server timezone)
+ * @return DateTime|false
+ */
+function parseEventDate(string $text, DateTimeZone $tz = null)
+{
+    $tz = $tz ?: new DateTimeZone(date_default_timezone_get());
+
+    // Normalise spacing and lowercase am/pm
+    $s = trim(preg_replace('/\s+/', ' ', $text));
+    $s = preg_replace('/\s+([ap]m)$/i', '$1', $s); // "10 am" -> "10am" (optional)
+
+    // Regex: optional weekday, day number, month name, "at", hour, optional :minutes, am/pm
+    $re = '/^(?:[A-Za-z]+?\s+)?' .                  // optional weekday e.g. "Monday "
+        '(?P<day>\d{1,2})\s+' .
+        '(?P<month>[A-Za-z]+)\s+' .
+        '(?:at\s+)?' .
+        '(?P<hour>\d{1,2})(?::(?P<min>\d{2}))?\s*(?P<ampm>am|pm)$/i';
+
+    if (!preg_match($re, $s, $m)) {
+        return false;
+    }
+
+    $day = (int)$m['day'];
+    $monthName = $m['month'];
+    $hour = (int)$m['hour'];
+    $min = isset($m['min']) && $m['min'] !== '' ? (int)$m['min'] : 0;
+    $ampm = strtolower($m['ampm']);
+
+    // Convert month name to month number reliably using DateTime
+    $tmp = DateTime::createFromFormat('!F', ucfirst(strtolower($monthName)));
+    if (! $tmp) {
+        return false;
+    }
+    $monthNum = (int)$tmp->format('n');
+
+    // Decide year: if the date (this year) is >= now -> this year, else next year.
+    $now = new DateTime('now', $tz);
+    $year = (int)$now->format('Y');
+
+    // Build candidate datetime for this year
+    // use 12-hour format with am/pm
+    $timeString = sprintf('%d-%02d-%02d %d:%02d %s', $year, $monthNum, $day, $hour, $min, $ampm);
+    $candidate = DateTime::createFromFormat('Y-m-d g:i a', $timeString, $tz);
+
+    // If createFromFormat failed for some reason, return false
+    if (! $candidate) {
+        return false;
+    }
+
+    // If candidate is in the past (strictly less than now), bump year by 1
+    if ($candidate < $now) {
+        $year++;
+        $timeString = sprintf('%d-%02d-%02d %d:%02d %s', $year, $monthNum, $day, $hour, $min, $ampm);
+        $candidate = DateTime::createFromFormat('Y-m-d g:i a', $timeString, $tz);
+        if (! $candidate) return false;
+    }
+
+    return $candidate;
 }
